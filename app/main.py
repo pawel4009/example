@@ -25,6 +25,13 @@ valid pydantic model,
  that creates folder alembic. Than we have to import our Base into env.py file(but the base must come from models.py, not from the database.py, because the models wont be read) in alembic folder, set metadata = BAse and in the alembic.ini change database sqlalchemy.url
  we are going to override value from the alembic.ini file with the 
  alembic --revision -m "message"
+
+ when we are creating postgresql on ubuntu machine and accessing it from this machine we need to change ubuntu user to created postgres user, because local authentication will fail,
+ we have to change postgres.conf and pg_hba file to remove peer authentication for local connections and change ip range to accept remote connections.
+ to be able to connect pgadmin from my comp to the ubuntu  server i needed to add security rule to allow connections to the 5432 port on ubuntu machine (in the azure)
+ - in the .env file in home directory we assign environment variables, then in .profile we create command to automatically create env var for us, after the machine reboot: 'set -o allexport; source /home/fastapi_ubuntu/.env; set +o allexport',
+ - then we need to run alembic upgrade head,
+ 
 """
 
 # Thanks to alembic we dont need to use this command, alembic will create all necessary tables
