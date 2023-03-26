@@ -51,6 +51,6 @@ app.include_router(vote.router)
 
 @app.get("/") # this is endpoint; HTTP method: .get() request to our API, this is ("/")root path --> path operation
 def root():
-    return {"message": "Welcome to my API"}
+    return {"message": "Welcome to my API!!!!!!!!!!!"}
 
 
