@@ -31,8 +31,17 @@ valid pydantic model,
  to be able to connect pgadmin from my comp to the ubuntu  server i needed to add security rule to allow connections to the 5432 port on ubuntu machine (in the azure)
  - in the .env file in home directory we assign environment variables, then in .profile we create command to automatically create env var for us, after the machine reboot: 'set -o allexport; source /home/fastapi_ubuntu/.env; set +o allexport',
  - then we need to run alembic upgrade head,
+ -  gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000,
+ - we are going to run gunicorn in the background and during the reboot. The content of the gunicorn.service has to be copied to: (venv) fastapi_ubuntu@fastapi-ubuntu:/etc/systemd/system$ sudo nano api.service,
+ - service doesnt have acccess to env variables (.profile), so we have to set: EnvironmentFile=/home/fastapi_ubuntu/.env,
+ - nginx - high performance web server, serves as a proxy to our gunicorn: HTTPS Requests --> NGINX --> GUNICORN. SO the responsibility of SSL is taken by the NGINX, not our app. To allow nginx i had to open 80, 443 ports.
+ - i have to created dns zone in azure and add my custom domain (devmro.site). Then i created a bunch od nameservers that i had to add to namecheap. I also created two sets in azure to point fastapi.devmro.site and www.fastapi.devmro.site to our vm ip,
+ - we used certbot to generate SSL certificates,
+ - firewall: we can use built in ufw to set rules:  sudo ufw status, sudo ufw allow ssh/http/https and 5432 (but it is not recommended, because someone can access our database using pgadmin, and we are hosting it om the same vitual machine, so..). Starting firewall sudo ufw enable,
+ - 
  
-"""
+ 
+ """
 
 # Thanks to alembic we dont need to use this command, alembic will create all necessary tables
 # models.Base.metadata.create_all(bind=engine)
