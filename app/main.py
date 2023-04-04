@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from app import models
 from app.database import engine
 from app.routers import post, user, auth, vote
@@ -38,9 +38,13 @@ valid pydantic model,
  - i have to created dns zone in azure and add my custom domain (devmro.site). Then i created a bunch od nameservers that i had to add to namecheap. I also created two sets in azure to point fastapi.devmro.site and www.fastapi.devmro.site to our vm ip,
  - we used certbot to generate SSL certificates,
  - firewall: we can use built in ufw to set rules:  sudo ufw status, sudo ufw allow ssh/http/https and 5432 (but it is not recommended, because someone can access our database using pgadmin, and we are hosting it om the same vitual machine, so..). Starting firewall sudo ufw enable,
- - 
- 
- 
+ - docker: we are createing Dockerfile in our fastapi directory, assigning commands and then running docker build -t fastapi:1.0 /path/to/dockerfile,
+ - instead of using docker run (CLI) we can use docker compose, the same functionality but in single file,
+ - we want to create another container for our database, but we need to create volume, to allow data persistence after stopping the container.
+ - if we want to push docker image to the remote repo, we need to rename the image with: sudo docker tag [source image] [new name],
+ - then we need to sudo docker push [new_tag]. We also need to be logged in (sudo docker login)
+ - its good to include two docker-compose files: for dev and production. But the we have to: sudo docker-compose -f docker-compose-prod.yml -d,
+ - in the docker-compose we can use without the build: image
  """
 
 # Thanks to alembic we dont need to use this command, alembic will create all necessary tables
@@ -65,7 +69,7 @@ app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
 
-@app.get("/") # this is endpoint; HTTP method: .get() request to our API, this is ("/")root path --> path operation
+@app.get("/", status_code=status.HTTP_202_ACCEPTED) # this is endpoint; HTTP method: .get() request to our API, this is ("/")root path --> path operation
 def root():
     return {"message": "Welcome to my API!!!!!!!!!!!"}
 

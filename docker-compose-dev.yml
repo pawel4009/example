@@ -1,0 +1,33 @@
+version: "3"
+services:
+    api:
+        build: .
+        depends_on:
+            - postgres
+        ports:
+            - 8000:8000
+        # env_file: # we can also assign env variables like this
+        #     - ./.env
+        volumes: # bind mount
+            - ./:/usr/src/app:ro # automatically sync files from the cureent folder to container path /usr... :ro read only(container wont change any files)
+        command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload # even if we use bind volume and our code is automatically copied to the container we have to override command from the Dockerfile to reload uvicorn after code changes
+        environment:
+            - DATABASE_HOSTNAME=postgres
+            - DATABASE_PORT=5432
+            - DATABASE_PASSWORD=Kottofi17!!!
+            - DATABASE_NAME=fastapi
+            - DATABASE_USERNAME=postgres
+            - SECRET_KEY=SF78D6S9HFSDJdsadas7d68anfk49plssd0UGS75FDSYGBFDUS7F8798798798u9fghdghadasd
+            - ALGORITHM=HS256
+            - ACCESS_TOKEN_EXPIRE_MINUTES=60
+    postgres:
+        image: postgres
+        environment:
+            - POSTGRES_PASSWORD=Kottofi17!!!
+            - POSTGRES_DB=fastapi
+        volumes:
+            - postgres-db:/var/lib/postgres/data # path in the container to store data
+
+volumes: # named volumes can be used by different containers, so we have to create global instance
+    postgres-db
+            
