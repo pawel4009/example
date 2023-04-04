@@ -2,8 +2,11 @@ name: Build and Deploy Code
 
 on: [push, pull_request]
 
+env:
+  DATABASE_HOSTNAME: localhost
+
 jobs:
-  job1: 
+  job1:
     runs-on: ubuntu-latest
     steps:
       - name: pulling git repo
