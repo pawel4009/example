@@ -45,6 +45,11 @@ valid pydantic model,
  - then we need to sudo docker push [new_tag]. We also need to be logged in (sudo docker login)
  - its good to include two docker-compose files: for dev and production. But the we have to: sudo docker-compose -f docker-compose-prod.yml -d,
  - in the docker-compose we can use without the build: image
+
+ - we are going to use github action to create CI/CD for our repo
+ - we create folder .github/workflows/build-deploy.yml and fill it with commands which our runner (github computer) should use; use latest ubuntu, set env paramaters from the environemt secrets that can be modified in the github, create docker image of the postgres database thatshould be also
+ run on our runner, to complete tests succesfully,
+ - to create CD we are going to pass two additional secrets into github: DOCKER_HUB_ACCESS_TOKEN(which was generated in the docker hub profile settings) and DOCKER_HUB_USERNAME (), then we add it to the deploy file
  """
 
 # Thanks to alembic we dont need to use this command, alembic will create all necessary tables
